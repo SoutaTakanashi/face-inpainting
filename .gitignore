@@ -1,0 +1,9 @@
+sample/*
+logs/*
+test/*
+datasets/*
+checkpoint/*
+val/*
+*.pyc
+.idea
+venv
