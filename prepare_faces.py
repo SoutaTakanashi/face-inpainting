@@ -9,8 +9,8 @@ import os.path
 
 from PIL import Image, ImageDraw
 
-orig_path = './datasets/faces/orig/'
-new_path = './datasets/faces/'
+orig_path = os.path.join('datasets', 'faces', 'orig')
+new_path = os.path.join('datasets', 'faces')
 
 width = height = 286
 green = (0, 255, 0)
@@ -20,7 +20,7 @@ for usage in ('train', 'test', 'val'):
     shutil.rmtree(path, ignore_errors=True)
     os.mkdir(path)
 
-filenames = list(glob(orig_path + '/*/*.jpg'))
+filenames = list(glob(os.path.join(orig_path, '*', '*.jpg')))
 for index, filename in enumerate(filenames):
     if index % 100 == 0:
         print('Processing {} ({}/{})'.format(filename, index, len(filenames)))
