@@ -118,16 +118,16 @@ class pix2pix(object):
             sample_images = np.array(sample).astype(np.float32)[:, :, :, None]
         else:
             sample_images = np.array(sample).astype(np.float32)
-        return sample_images
+        return sample_images, [os.path.basename(sample_file) for sample_file in data]
 
     def sample_model(self, sample_dir, epoch, idx):
-        sample_images = self.load_random_samples()
+        sample_images, orig_names = self.load_random_samples()
         samples, d_loss, g_loss = self.sess.run(
             [self.fake_B_sample, self.d_loss, self.g_loss],
             feed_dict={self.real_data: sample_images}
         )
         save_images(samples, [self.batch_size, 1],
-                    './{}/train_{:02d}_{:04d}.png'.format(sample_dir, epoch, idx))
+                    './{}/train_{:02d}_{:04d}_{}.png'.format(sample_dir, epoch, idx, '_'.join(orig_names)))
         print("[Sample] d_loss: {:.8f}, g_loss: {:.8f}".format(d_loss, g_loss))
 
     def train(self, args):
@@ -190,10 +190,10 @@ class pix2pix(object):
                     % (epoch, idx, batch_idxs,
                         time.time() - start_time, errD_fake+errD_real, errG))
 
-                if np.mod(counter, 10) == 1:
+                if np.mod(counter, 100) == 1:
                     self.sample_model(args.sample_dir, epoch, idx)
 
-                if np.mod(counter, 100) == 2:
+                if np.mod(counter, 500) == 2:
                     self.save(args.checkpoint_dir, counter)
 
     def discriminator(self, image, y=None, reuse=False):
